@@ -1,0 +1,247 @@
+:root {
+  --bg-deep: #061a2d;
+  --bg-mid: #0d3554;
+  --bg-glow: #0d7c7a;
+  --panel: rgba(9, 28, 43, 0.82);
+  --panel-border: rgba(160, 219, 255, 0.28);
+  --text: #ecf9ff;
+  --muted: #b9d9ea;
+  --active: linear-gradient(180deg, rgba(62, 126, 255, 0.95), rgba(36, 174, 180, 0.8));
+  --locked: rgba(28, 53, 76, 0.72);
+  --redeemed: rgba(120, 128, 140, 0.7);
+  --skipped: rgba(95, 110, 114, 0.75);
+  --highlight: #8ef7d5;
+  --danger: #ff8db1;
+  --shadow: 0 24px 70px rgba(1, 12, 24, 0.55);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  font-family: 'Inter', sans-serif;
+  background:
+    radial-gradient(circle at top, rgba(75, 130, 255, 0.3), transparent 25%),
+    linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-mid) 35%, var(--bg-glow) 100%);
+  color: var(--text);
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 28px 16px 44px;
+}
+
+.app-shell {
+  width: min(100%, 430px);
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  font-size: 11px;
+  color: var(--highlight);
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 2.3rem);
+  line-height: 1.1;
+}
+
+.toolbar {
+  margin-bottom: 16px;
+}
+
+.primary-button,
+.ghost-button,
+.action-button {
+  border: none;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.18s ease, opacity 0.18s ease;
+}
+
+.primary-button:hover,
+.ghost-button:hover,
+.action-button:hover {
+  transform: translateY(-1px);
+}
+
+.primary-button {
+  width: 100%;
+  padding: 14px 18px;
+  color: #061a2d;
+  background: linear-gradient(135deg, #8ef7d5 0%, #79d8ff 100%);
+  box-shadow: 0 14px 28px rgba(92, 220, 202, 0.3);
+}
+
+.ghost-button {
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.coupon-list {
+  display: grid;
+  gap: 14px;
+}
+
+.coupon-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 110px;
+  padding: 18px 18px 16px;
+  border-radius: 24px;
+  border: 1px solid var(--panel-border);
+  background: rgba(8, 24, 38, 0.72);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.coupon-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: transparent;
+}
+
+.coupon-card.active {
+  background: var(--active);
+  border-color: rgba(168, 243, 255, 0.48);
+}
+
+.coupon-card.active::before {
+  background: linear-gradient(180deg, #b3ffcf, #e4ff5f);
+}
+
+.coupon-card.locked {
+  background: var(--locked);
+  opacity: 0.9;
+}
+
+.coupon-card.redeemed {
+  background: var(--redeemed);
+}
+
+.coupon-card.skipped {
+  background: var(--skipped);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.card-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 800;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.badge {
+  border-radius: 999px;
+  padding: 6px 10px;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  font-weight: 800;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1.1rem;
+  line-height: 1.2;
+}
+
+.card-description {
+  margin: 0;
+  line-height: 1.5;
+  color: rgba(236, 249, 255, 0.9);
+}
+
+.locked-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.locked-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.card-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.action-button {
+  flex: 1;
+  padding: 12px 16px;
+  color: #031420;
+  font-weight: 800;
+}
+
+.action-button.redeem {
+  background: linear-gradient(135deg, #9cf2d2, #63d5ff);
+}
+
+.action-button.skip {
+  background: linear-gradient(135deg, #ffd39c, #ff9cbc);
+}
+
+.empty-state {
+  padding: 26px 18px;
+  border-radius: 24px;
+  text-align: center;
+  color: var(--muted);
+  background: rgba(8, 24, 38, 0.72);
+  border: 1px solid var(--panel-border);
+}
+
+@media (max-width: 390px) {
+  .coupon-card {
+    padding: 16px 14px 14px;
+  }
+
+  .card-actions {
+    flex-direction: column;
+  }
+}

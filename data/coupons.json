@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "title": "Free coffee",
+    "description": "A complimentary coffee for one person.",
+    "status": "redeemed"
+  },
+  {
+    "id": 2,
+    "title": "Movie night",
+    "description": "Two tickets for a weekend screening.",
+    "status": "active"
+  },
+  {
+    "id": 3,
+    "title": "Spa pass",
+    "description": "A weekend spa day for one person.",
+    "status": "locked"
+  }
+]

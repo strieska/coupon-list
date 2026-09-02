@@ -1,0 +1,10 @@
+services:
+  app:
+    build: .
+    container_name: coupon-app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      PORT: 3000
