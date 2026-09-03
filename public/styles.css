@@ -115,6 +115,12 @@ h1 {
   background: rgba(8, 24, 38, 0.72);
   box-shadow: var(--shadow);
   overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease, opacity 0.18s ease;
+}
+
+.coupon-card:hover {
+  border-color: rgba(168, 243, 255, 0.5);
 }
 
 .coupon-card::before {
@@ -186,6 +192,24 @@ h1 {
   margin: 0;
   line-height: 1.5;
   color: rgba(236, 249, 255, 0.9);
+  opacity: 1;
+  max-height: 220px;
+  overflow: hidden;
+  transition: max-height 0.2s ease, opacity 0.2s ease;
+}
+
+.coupon-card.collapsed .card-description,
+.coupon-card.collapsed .card-actions {
+  display: none;
+}
+
+.coupon-card.collapsed {
+  min-height: 90px;
+}
+
+.coupon-card.redeemed .card-description,
+.coupon-card.skipped .card-description {
+  color: rgba(236, 249, 255, 0.78);
 }
 
 .locked-label {

@@ -1,6 +1,6 @@
 const couponList = document.getElementById('coupon-list');
-const clearAllButton = document.getElementById('clear-all');
 const loadDemoButton = document.getElementById('load-demo');
+let expandedCouponId = null;
 
 const sampleCoupons = [
   {
@@ -51,6 +51,7 @@ async function clearAllCoupons() {
     throw new Error('Unable to clear coupons.');
   }
 
+  expandedCouponId = null;
   await renderCoupons();
 }
 
@@ -64,10 +65,18 @@ async function actOnCoupon(id, action) {
     throw new Error(error.error || 'Unable to update coupon.');
   }
 
+  const updatedCoupons = await response.json();
+  const nextActiveCoupon = updatedCoupons.find((coupon) => coupon.status === 'active');
+  expandedCouponId = nextActiveCoupon ? nextActiveCoupon.id : null;
+
   await renderCoupons();
 }
 
-function renderCard(coupon) {
+function getDefaultExpandedCouponId(coupons) {
+  return coupons.find((coupon) => coupon.status === 'active')?.id ?? null;
+}
+
+function renderCard(coupon, isExpanded) {
   const title = coupon.title || 'Hidden coupon';
   const stateClass = coupon.status;
 
@@ -93,14 +102,14 @@ function renderCard(coupon) {
     : '';
 
   return `
-    <article class="coupon-card ${stateClass}" data-id="${coupon.id}">
+    <article class="coupon-card ${stateClass} ${isExpanded ? 'expanded' : 'collapsed'}" data-id="${coupon.id}">
       <div class="card-header">
         <span class="card-number">#${coupon.id}</span>
         <span class="badge">${coupon.status === 'redeemed' ? 'Redeemed' : coupon.status === 'skipped' ? 'Skipped' : 'Active'}</span>
       </div>
       <h2 class="card-title">${title}</h2>
-      <p class="card-description">${coupon.description || 'No description available.'}</p>
-      ${actions}
+      ${isExpanded ? `<p class="card-description">${coupon.description || 'No description available.'}</p>` : ''}
+      ${isExpanded ? actions : ''}
     </article>
   `;
 }
@@ -114,10 +123,41 @@ async function renderCoupons() {
       return;
     }
 
-    couponList.innerHTML = coupons.map(renderCard).join('');
+    if (expandedCouponId === null || !coupons.some((coupon) => coupon.id === expandedCouponId)) {
+      expandedCouponId = getDefaultExpandedCouponId(coupons);
+    }
+
+    couponList.innerHTML = coupons.map((coupon) => {
+      const isExpanded = coupon.id === expandedCouponId;
+      return renderCard(coupon, isExpanded);
+    }).join('');
+
+    couponList.querySelectorAll('.coupon-card:not(.locked)').forEach((card) => {
+      card.addEventListener('click', (event) => {
+        const clickedButton = event.target.closest('[data-action]');
+        if (clickedButton) {
+          return;
+        }
+
+        const { id } = card.dataset;
+        if (card.classList.contains('active')) {
+          expandedCouponId = Number(id);
+          return renderCoupons();
+        }
+
+        if (expandedCouponId === Number(id)) {
+          expandedCouponId = null;
+        } else {
+          expandedCouponId = Number(id);
+        }
+
+        renderCoupons();
+      });
+    });
 
     couponList.querySelectorAll('[data-action]').forEach((button) => {
-      button.addEventListener('click', async () => {
+      button.addEventListener('click', async (event) => {
+        event.stopPropagation();
         const { action, id } = button.dataset;
         try {
           await actOnCoupon(id, action);
@@ -130,14 +170,6 @@ async function renderCoupons() {
     couponList.innerHTML = `<div class="empty-state">${error.message}</div>`;
   }
 }
-
-clearAllButton.addEventListener('click', async () => {
-  try {
-    await clearAllCoupons();
-  } catch (error) {
-    alert(error.message);
-  }
-});
 
 loadDemoButton.addEventListener('click', async () => {
   try {

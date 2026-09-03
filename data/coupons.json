@@ -2,19 +2,19 @@
   {
     "id": 1,
     "title": "Free coffee",
-    "description": "A complimentary coffee for one person.",
+    "description": "One free coffee.",
     "status": "redeemed"
   },
   {
     "id": 2,
     "title": "Movie night",
-    "description": "Two tickets for a weekend screening.",
+    "description": "Two tickets.",
     "status": "active"
   },
   {
     "id": 3,
     "title": "Spa pass",
-    "description": "A weekend spa day for one person.",
+    "description": "Spa day.",
     "status": "locked"
   }
 ]
