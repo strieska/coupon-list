@@ -3,6 +3,7 @@ const listId = window.location.pathname.split('/')[2] || '';
 const managementKey = params.get('key');
 const form = document.getElementById('manage-form');
 const modeInput = document.getElementById('mode');
+const titleInput = document.getElementById('title');
 const expiresAtInput = document.getElementById('expiresAt');
 const couponsInput = document.getElementById('coupons');
 const deleteButton = document.getElementById('delete-button');
@@ -43,6 +44,7 @@ async function loadList() {
   }
 
   modeInput.value = payload.mode || 'sequential';
+  titleInput.value = payload.title || 'Coupon chain';
   expiresAtInput.value = payload.expiresAt ? new Date(payload.expiresAt).toISOString().slice(0, 16) : '';
   couponsInput.value = formatListForTextarea(payload.coupons || []);
   statusBox.textContent = `List ID: ${payload.id}`;
@@ -54,6 +56,7 @@ form.addEventListener('submit', async (event) => {
 
   try {
     const payload = {
+      title: titleInput.value,
       mode: modeInput.value,
       expiresAt: expiresAtInput.value ? new Date(expiresAtInput.value).toISOString() : null,
       coupons: JSON.parse(couponsInput.value)

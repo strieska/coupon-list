@@ -221,7 +221,18 @@ button:hover {
 }
 
 .coupon-card.skipped {
-  background: var(--skipped);
+  background: #e7eaec;
+  color: #26323a;
+  border-color: rgba(255, 255, 255, 0.72);
+}
+
+.coupon-card.skipped .badge,
+.coupon-card.skipped .card-number {
+  background: rgba(38, 50, 58, 0.12);
+}
+
+.coupon-card.skipped .card-description {
+  color: rgba(38, 50, 58, 0.78);
 }
 
 .card-header {

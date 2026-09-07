@@ -1,5 +1,6 @@
 const listId = window.location.pathname.split('/')[2] || '';
 const listStatus = document.getElementById('list-status');
+const listTitle = document.getElementById('list-title');
 const couponList = document.getElementById('coupon-list');
 const errorBox = document.getElementById('error-box');
 let expandedCouponId = null;
@@ -91,6 +92,7 @@ async function redeemCoupon(couponId, action) {
 
 function renderList(list) {
   hideError();
+  listTitle.textContent = list.title || 'Coupon chain';
 
   if (!list?.coupons?.length) {
     couponList.innerHTML = '<div class="empty-state">This list is empty.</div>';
@@ -133,8 +135,8 @@ function renderList(list) {
     });
   });
 
-  const modeLabel = list.mode === 'sequential' ? 'Sequential mode' : 'Open mode';
-  listStatus.textContent = `${modeLabel} • ${list.coupons.filter((coupon) => coupon.status === 'redeemed' || coupon.status === 'skipped').length}/${list.coupons.length} resolved`;
+  const finishedCount = list.coupons.filter((coupon) => coupon.status === 'redeemed' || coupon.status === 'skipped').length;
+  listStatus.textContent = `🎁 ${finishedCount} of ${list.coupons.length} gifts claimed or passed on`;
 }
 
 (async function init() {

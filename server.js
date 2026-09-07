@@ -193,6 +193,7 @@ function getPublicListPayload(list) {
   return {
     id: list.id,
     mode: list.mode,
+    title: list.title || 'Coupon chain',
     createdAt: list.createdAt,
     expiresAt: list.expiresAt || null,
     coupons: (list.coupons || []).map((coupon) => ({
@@ -280,6 +281,7 @@ app.post('/api/lists', async (req, res) => {
       id: randomListId(),
       redeemId: randomListId(),
       managementKey: randomManagementKey(),
+      title: String(rawBody.title || 'Coupon chain').trim() || 'Coupon chain',
       mode,
       createdAt: new Date().toISOString(),
       expiresAt: parseOptionalDate(rawBody.expiresAt),
@@ -299,6 +301,7 @@ app.post('/api/lists', async (req, res) => {
       id: list.id,
       redeemId: list.id,
       mode: list.mode,
+      title: list.title,
       redeemLink,
       managementLink,
       qrCode,
@@ -341,6 +344,7 @@ app.put('/api/lists/:listId', enforceRateLimit, requireManagementAccess, (req, r
   }
 
   lists[listIndex].mode = mode;
+  lists[listIndex].title = String(rawBody.title || lists[listIndex].title || 'Coupon chain').trim() || 'Coupon chain';
   lists[listIndex].expiresAt = parseOptionalDate(rawBody.expiresAt) || null;
   lists[listIndex].coupons = normalizeCoupons(parsedCoupons, mode);
 

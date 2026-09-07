@@ -38,6 +38,8 @@ Open `/new`, input one or more coupon items, choose a mode, and submit. The serv
 - private management link
 - QR code image for the redeem link
 
+The title is shown on the public redeem page and can be changed later from the management page.
+
 ## API reference
 
 ### Create list
@@ -52,6 +54,7 @@ Body example:
 ```json
 {
   "mode": "sequential",
+  "title": "Birthday treats",
   "expiresAt": "2027-01-20T18:00:00.000Z",
   "coupons": [
     { "title": "Free coffee", "description": "Complimentary coffee for one person." },
@@ -102,6 +105,7 @@ Body example:
 ```json
 {
   "mode": "open",
+  "title": "Weekend surprises",
   "expiresAt": null,
   "coupons": [
     { "title": "Free coffee", "description": "Complimentary coffee for one person." },
