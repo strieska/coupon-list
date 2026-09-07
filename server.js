@@ -83,19 +83,6 @@ function randomManagementKey() {
   return crypto.randomBytes(24).toString('hex');
 }
 
-function parseOptionalDate(value) {
-  if (!value) {
-    return null;
-  }
-
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
-    return null;
-  }
-
-  return date.toISOString();
-}
-
 function cloneCoupon(coupon, index) {
   return {
     id: coupon.id || `coupon-${index + 1}`,
@@ -185,17 +172,12 @@ function setSequentialState(list) {
   }
 }
 
-function listHasExpired(list) {
-  return Boolean(list.expiresAt) && new Date(list.expiresAt).getTime() <= Date.now();
-}
-
 function getPublicListPayload(list) {
   return {
     id: list.id,
     mode: list.mode,
     title: list.title || 'Coupon chain',
     createdAt: list.createdAt,
-    expiresAt: list.expiresAt || null,
     coupons: (list.coupons || []).map((coupon) => ({
       id: coupon.id,
       title: coupon.title,
@@ -217,10 +199,6 @@ function requireManagementAccess(req, res, next) {
 
   if (!list) {
     return res.status(404).json({ error: 'List not found.' });
-  }
-
-  if (listHasExpired(list)) {
-    return res.status(410).json({ error: 'This list has expired and is no longer accessible.' });
   }
 
   if (providedKey !== list.managementKey) {
@@ -284,7 +262,6 @@ app.post('/api/lists', async (req, res) => {
       title: String(rawBody.title || 'Coupon chain').trim() || 'Coupon chain',
       mode,
       createdAt: new Date().toISOString(),
-      expiresAt: parseOptionalDate(rawBody.expiresAt),
       coupons
     };
 
@@ -318,10 +295,6 @@ app.get('/api/lists/:listId', enforceRateLimit, (req, res) => {
     return res.status(404).json({ error: 'List not found.' });
   }
 
-  if (listHasExpired(list)) {
-    return res.status(410).json({ error: 'This list has expired and is no longer accessible.' });
-  }
-
   return res.json(getPublicListPayload(list));
 });
 
@@ -345,7 +318,6 @@ app.put('/api/lists/:listId', enforceRateLimit, requireManagementAccess, (req, r
 
   lists[listIndex].mode = mode;
   lists[listIndex].title = String(rawBody.title || lists[listIndex].title || 'Coupon chain').trim() || 'Coupon chain';
-  lists[listIndex].expiresAt = parseOptionalDate(rawBody.expiresAt) || null;
   lists[listIndex].coupons = normalizeCoupons(parsedCoupons, mode);
 
   writeLists(lists);
@@ -362,10 +334,6 @@ app.post('/api/lists/:listId/coupons/:couponId/redeem', enforceRateLimit, (req, 
   const list = findListById(req.params.listId);
   if (!list) {
     return res.status(404).json({ error: 'List not found.' });
-  }
-
-  if (listHasExpired(list)) {
-    return res.status(410).json({ error: 'This list has expired and is no longer accessible.' });
   }
 
   const coupon = list.coupons.find((entry) => entry.id === req.params.couponId);
@@ -408,10 +376,6 @@ app.post('/api/lists/:listId/coupons/:couponId/skip', enforceRateLimit, (req, re
   const list = findListById(req.params.listId);
   if (!list) {
     return res.status(404).json({ error: 'List not found.' });
-  }
-
-  if (listHasExpired(list)) {
-    return res.status(410).json({ error: 'This list has expired and is no longer accessible.' });
   }
 
   if (list.mode !== 'sequential') {

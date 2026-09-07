@@ -36,7 +36,6 @@ form.addEventListener('submit', async (event) => {
   const body = {
     title: formData.get('title'),
     mode: formData.get('mode'),
-    expiresAt: formData.get('expiresAt') ? new Date(formData.get('expiresAt')).toISOString() : null,
     coupons: formData.get('coupons')
   };
 

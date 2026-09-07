@@ -55,7 +55,6 @@ Body example:
 {
   "mode": "sequential",
   "title": "Birthday treats",
-  "expiresAt": "2027-01-20T18:00:00.000Z",
   "coupons": [
     { "title": "Free coffee", "description": "Complimentary coffee for one person." },
     { "title": "Movie night", "description": "Two tickets for a weekend screening." }
@@ -106,7 +105,6 @@ Body example:
 {
   "mode": "open",
   "title": "Weekend surprises",
-  "expiresAt": null,
   "coupons": [
     { "title": "Free coffee", "description": "Complimentary coffee for one person." },
     { "title": "Dinner for two", "description": "A two-person dinner voucher." }
