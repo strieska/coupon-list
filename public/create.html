@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create coupon list</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">List creation</p>
+          <h1>Make a shareable coupon list</h1>
+        </div>
+      </header>
+
+      <main class="panel">
+        <form id="create-form">
+          <div class="form-row">
+            <div>
+              <label for="mode">List mode</label>
+              <select id="mode" name="mode">
+                <option value="sequential">Sequential</option>
+                <option value="open">Open</option>
+              </select>
+            </div>
+            <div>
+              <label for="expiresAt">Expiry (optional)</label>
+              <input id="expiresAt" name="expiresAt" type="datetime-local" />
+            </div>
+          </div>
+
+          <label for="coupon-file">Upload a JSON file (optional)</label>
+          <input id="coupon-file" type="file" accept=".json,.txt" />
+
+          <label for="coupons">Coupons</label>
+          <textarea id="coupons" name="coupons" placeholder="Paste a JSON array like [{&quot;title&quot;:&quot;Free coffee&quot;,&quot;description&quot;:&quot;Complimentary coffee&quot;}] or item lines like: Free coffee | Complimentary coffee"></textarea>
+
+          <button class="primary-button" type="submit">Create list</button>
+        </form>
+
+        <div id="result" class="result-box hidden">
+          <h2>Shareable redeem link</h2>
+          <p><a id="redeem-link" target="_blank" rel="noreferrer"></a></p>
+          <h3>Management link</h3>
+          <p><a id="manage-link" target="_blank" rel="noreferrer"></a></p>
+          <img id="qr-code" class="qr-code" alt="QR code for redeem link" />
+        </div>
+
+        <div id="error-box" class="error-box hidden"></div>
+      </main>
+    </div>
+
+    <script src="/create.js"></script>
+  </body>
+</html>

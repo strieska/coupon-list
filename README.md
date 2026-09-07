@@ -1,147 +1,183 @@
-# Coupon App
+# Coupon List App
 
-A simple single-user web app for tracking a sequential chain of redeemable coupons.
-
-## Features
-
-- Only one coupon is active at a time.
-- Locked coupons stay hidden until they unlock.
-- Active coupons can be redeemed or skipped.
-- Redeemed and skipped coupons remain visible, but become inactive and grayed out.
-- Local Docker setup for self-hosted use.
+This app supports multiple isolated coupon lists, each with a redeem-only share link and a separate private management link. Lists can run in either `sequential` or `open` mode.
 
 ## Run locally
 
-### Option 1: Plain Node.js
+### Node.js
 
 ```bash
 npm install
 npm start
 ```
 
-Open http://localhost:3000 in your browser.
+Then browse to:
 
-### Option 2: Docker Compose
+- http://localhost:3000/
+- http://localhost:3000/new
+
+### Docker
 
 ```bash
 docker compose up --build
 ```
 
-Open http://localhost:3000 in your browser.
+Then browse to http://localhost:3000/new to create a list.
+
+## Main routes
+
+- `/new` — create a new list
+- `/l/:listId` — public redeem page
+- `/l/:listId/manage?key=:secret` — creator management page
+
+## Creation flow
+
+Open `/new`, input one or more coupon items, choose a mode, and submit. The server returns:
+
+- redeem link
+- private management link
+- QR code image for the redeem link
 
 ## API reference
 
-### Fetch coupons
+### Create list
 
 ```http
-GET /api/coupons
-```
-
-Returns the current coupon list in order. Each object looks like:
-
-```json
-[
-  {
-    "id": 1,
-    "title": "Free coffee",
-    "description": "A complimentary coffee for one person.",
-    "status": "active"
-  }
-]
-```
-
-Valid statuses:
-
-- `active`
-- `locked`
-- `redeemed`
-- `skipped`
-
-### Delete all coupons
-
-```http
-DELETE /api/coupons
-```
-
-Clears the entire list and resets the application state.
-
-### Bulk add / replace coupons
-
-```http
-POST /api/coupons/bulk
+POST /api/lists
 Content-Type: application/json
 ```
 
-Accepted payloads:
-
-```json
-[
-  { "title": "Free coffee", "description": "A complimentary coffee for one person." },
-  { "title": "Movie night", "description": "Two tickets for a weekend screening." }
-]
-```
-
-Or:
+Body example:
 
 ```json
 {
+  "mode": "sequential",
+  "expiresAt": "2027-01-20T18:00:00.000Z",
   "coupons": [
-    { "title": "Free coffee", "description": "A complimentary coffee for one person." },
+    { "title": "Free coffee", "description": "Complimentary coffee for one person." },
     { "title": "Movie night", "description": "Two tickets for a weekend screening." }
   ]
 }
 ```
 
-This replaces the current list, resets state, and makes the first coupon active.
+Response example:
 
-### Redeem an active coupon
-
-```http
-POST /api/coupons/1/redeem
+```json
+{
+  "id": "b622d4d1-7f5a-456f-b846-fb22a26d1a3d",
+  "redeemId": "b622d4d1-7f5a-456f-b846-fb22a26d1a3d",
+  "mode": "sequential",
+  "redeemLink": "http://localhost:3000/l/b622d4d1-7f5a-456f-b846-fb22a26d1a3d",
+  "managementLink": "http://localhost:3000/l/b622d4d1-7f5a-456f-b846-fb22a26d1a3d/manage?key=abc123",
+  "qrCode": "data:image/png;base64,...",
+  "managementKey": "abc123"
+}
 ```
 
-Marks the first coupon as redeemed and unlocks the next coupon in the chain.
-
-### Skip an active coupon
+### Fetch public list
 
 ```http
-POST /api/coupons/1/skip
+GET /api/lists/:listId
 ```
 
-Marks the first coupon as skipped and unlocks the next coupon in the chain.
+Returns the current list state for rendering the share page.
+
+### Fetch list in management mode
+
+```http
+GET /api/lists/:listId/manage?key=:secret
+```
+
+Requires the management key.
+
+### Edit/replace list
+
+```http
+PUT /api/lists/:listId?key=:secret
+Content-Type: application/json
+```
+
+Body example:
+
+```json
+{
+  "mode": "open",
+  "expiresAt": null,
+  "coupons": [
+    { "title": "Free coffee", "description": "Complimentary coffee for one person." },
+    { "title": "Dinner for two", "description": "A two-person dinner voucher." }
+  ]
+}
+```
+
+### Delete list
+
+```http
+DELETE /api/lists/:listId?key=:secret
+```
+
+### Redeem a coupon in a list
+
+```http
+POST /api/lists/:listId/coupons/:couponId/redeem
+```
+
+For `open` mode, any visible coupon can be redeemed independently.
+
+For `sequential` mode, only the active coupon can be redeemed.
+
+### Skip a coupon in a list
+
+```http
+POST /api/lists/:listId/coupons/:couponId/skip
+```
+
+Only valid in `sequential` mode and only for the active coupon.
 
 ## Example curl calls
 
-Delete all coupons:
+Create a list:
 
 ```bash
-curl -X DELETE http://localhost:3000/api/coupons
-```
-
-Bulk replace with a list:
-
-```bash
-curl -X POST http://localhost:3000/api/coupons/bulk \
+curl -X POST http://localhost:3000/api/lists \
   -H "Content-Type: application/json" \
-  -d '[
-    {"title":"Free coffee","description":"A complimentary coffee for one person."},
-    {"title":"Dinner for two","description":"A free dinner voucher for two."}
-  ]'
+  -d '{
+    "mode": "sequential",
+    "coupons": [
+      {"title":"Free coffee","description":"Complimentary coffee for one person."},
+      {"title":"Movie night","description":"Two tickets for a weekend screening."}
+    ]
+  }'
 ```
 
-Fetch current list:
+Delete a list:
 
 ```bash
-curl http://localhost:3000/api/coupons
+curl -X DELETE "http://localhost:3000/api/lists/<list-id>?key=<management-key>"
 ```
 
-Redeem the current active coupon:
+Replace the coupons in a list:
 
 ```bash
-curl -X POST http://localhost:3000/api/coupons/1/redeem
+curl -X PUT "http://localhost:3000/api/lists/<list-id>?key=<management-key>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "mode": "open",
+    "coupons": [
+      {"title":"Free lunch","description":"A lunch gift voucher."},
+      {"title":"Spa pass","description":"One weekday spa session."}
+    ]
+  }'
+```
+
+Fetch a public list:
+
+```bash
+curl http://localhost:3000/api/lists/<list-id>
 ```
 
 ## Notes
 
-- The app stores data in the local `data/coupons.json` file.
-- For a single-user self-hosted deployment, this is enough for local use.
+- The app stores all list data in `data/lists.json`.
+- Management keys are kept separate from the redeem IDs; the redeem link cannot delete or edit the list.
+- Rate limiting is intentionally basic and lightweight for local/self-hosted use.

@@ -3,30 +3,33 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Coupon Chain</title>
+    <title>Coupon List App</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
-    <div class="app-shell">
+    <div class="page-shell">
       <header class="topbar">
         <div>
-          <p class="eyebrow">Redeemable offers</p>
-          <h1>Coupon chain</h1>
+          <p class="eyebrow">Shared rewards</p>
+          <h1>Coupon list platform</h1>
         </div>
       </header>
 
-      <div class="toolbar">
-        <button id="load-demo" class="primary-button" type="button">Load demo list</button>
-      </div>
-
-      <main>
-        <div id="coupon-list" class="coupon-list" aria-live="polite"></div>
+      <main class="panel">
+        <p class="meta-text">
+          Create a new list at <strong>/new</strong> to generate a redeem link and a private management link.
+          A recipient opens the redeem link to see and act on the coupons, while the management link lets the creator edit or delete the list.
+        </p>
+        <p class="meta-text">
+          Example redeem URL: <code>/l/&lt;list-id&gt;</code>
+        </p>
+        <p class="meta-text">
+          Example management URL: <code>/l/&lt;list-id&gt;/manage?key=&lt;secret&gt;</code>
+        </p>
       </main>
     </div>
-
-    <script src="/app.js"></script>
   </body>
 </html>

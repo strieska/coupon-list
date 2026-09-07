@@ -1,20 +1,26 @@
 [
   {
     "id": 1,
-    "title": "Free coffee",
-    "description": "One free coffee.",
-    "status": "redeemed"
-  },
-  {
-    "id": 2,
-    "title": "Movie night",
-    "description": "Two tickets.",
+    "title": "Free cold brew",
+    "description": "Enjoy any cold brew on the house at your favourite café. Valid for one redemption only.",
     "status": "active"
   },
   {
+    "id": 2,
+    "title": "Dinner for two",
+    "description": "A complimentary dinner voucher for two, redeemable during off-peak hours on weekdays.",
+    "status": "locked"
+  },
+  {
     "id": 3,
-    "title": "Spa pass",
-    "description": "Spa day.",
+    "title": "Movie night",
+    "description": "Claim two tickets for a late-evening screening and a complimentary small popcorn.",
+    "status": "locked"
+  },
+  {
+    "id": 4,
+    "title": "Weekend spa pass",
+    "description": "Use this seasonal spa pass for a relaxing weekend reset with access to the lounge.",
     "status": "locked"
   }
 ]
